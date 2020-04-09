@@ -1,4 +1,6 @@
 <?php
+namespace Codewars\PHPUnitCodewars;
+
 use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\ExceptionWrapper;
 use PHPUnit\Framework\ExpectationFailedException;

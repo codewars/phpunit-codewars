@@ -7,7 +7,7 @@
   "homepage": "https://github.com/codewars/phpunit-codewars",
   "autoload": {
     "psr-4": {
-      "codewars\\PHPUnitCodewars\\": "src"
+      "Codewars\\PHPUnitCodewars\\": "src"
     }
   },
   "require": {

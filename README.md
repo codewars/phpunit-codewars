@@ -1,16 +1,16 @@
 ## codewars/phpunit-codewars
 
-Provides `CodewarsResultPrinter`.
+Provides `Codewars\PHPUnitCodewars\CodewarsResultPrinter`.
 
 ### Usage
 
 CLI:
 ```
-phpunit --printer codewars\PHPUnitCodewars\CodewarsResultPrinter
+phpunit --printer Codewars\PHPUnitCodewars\CodewarsResultPrinter
 ```
 
 With `phpunit.xml`:
 ```xml
-<phpunit printerClass="codewars\PHPUnitCodewars\CodewarsResultPrinter">
+<phpunit printerClass="Codewars\PHPUnitCodewars\CodewarsResultPrinter">
 </phpunit>
 ```
