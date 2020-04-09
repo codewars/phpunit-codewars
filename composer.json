@@ -1,0 +1,17 @@
+{
+  "name": "codewars/phpunit-codewars",
+  "description": "Codewars result printer for PHPUnit",
+  "type": "library",
+  "license": "MIT",
+  "keywords": ["codewars", "test", "phpunit", "phpunit reporter"],
+  "homepage": "https://github.com/codewars/phpunit-codewars",
+  "autoload": {
+    "psr-4": {
+      "codewars\\PHPUnitCodewars\\": "src"
+    }
+  },
+  "require": {
+    "php": ">=7.4",
+    "phpunit/phpunit": "^9"
+  }
+}
