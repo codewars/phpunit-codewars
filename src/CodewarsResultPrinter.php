@@ -24,20 +24,16 @@ class CodewarsResultPrinter extends DefaultResultPrinter
      * @var TestSuite
      */
     private $wrapperSuite = null;
-    /**
-     * @var bool
-     */
-    protected $lastTestFailed = false;
-
+    // Temporarily store failure messages so that the outputs can be written before them.
+    private $failures = array();
 
     /**
      * An error occurred.
      */
     public function addError(Test $test, \Throwable $t, float $time): void
     {
-        $this->lastTestFailed = true;
-        $this->write(sprintf("\n<ERROR::>%s\n", self::getMessage($t)));
-        $this->write(sprintf("\n<LOG::-Details>%s\n", self::escapeLF(self::getDetails($t))));
+        $this->failures[] = sprintf("\n<ERROR::>%s\n", self::getMessage($t));
+        $this->failures[] = sprintf("\n<LOG::-Stacktrace>%s\n", self::escapeLF(self::getDetails($t)));
     }
 
     /**
@@ -45,9 +41,8 @@ class CodewarsResultPrinter extends DefaultResultPrinter
      */
     public function addWarning(Test $test, Warning $e, float $time): void
     {
-        $this->lastTestFailed = true;
-        $this->write(sprintf("\n<ERROR::>%s\n", self::getMessage($e)));
-        $this->write(sprintf("\n<LOG::-Details>%s\n", self::escapeLF(self::getDetails($e))));
+        $this->failures[] = sprintf("\n<ERROR::>%s\n", self::getMessage($e));
+        $this->failures[] = sprintf("\n<LOG::-Stacktrace>%s\n", self::escapeLF(self::getDetails($e)));
     }
 
     /**
@@ -55,13 +50,11 @@ class CodewarsResultPrinter extends DefaultResultPrinter
      */
     public function addFailure(Test $test, AssertionFailedError $e, float $time): void
     {
-        $this->lastTestFailed = true;
         $msg = self::getMessage($e);
         if ($e instanceof ExpectationFailedException) {
             $msg .= self::getAssertionDetails($e);
         }
-        $this->write(sprintf("\n<FAILED::>%s\n", self::escapeLF($msg)));
-        $this->write(sprintf("\n<LOG::-Details>%s\n", self::escapeLF(self::getDetails($e))));
+        $this->failures[] = sprintf("\n<FAILED::>%s\n", self::escapeLF($msg));
     }
 
     /**
@@ -130,6 +123,7 @@ class CodewarsResultPrinter extends DefaultResultPrinter
     public function startTest(Test $test): void
     {
         $this->write(sprintf("\n<IT::>%s\n", $test->getName()));
+        $this->failures = array();
     }
 
     /**
@@ -137,9 +131,16 @@ class CodewarsResultPrinter extends DefaultResultPrinter
      */
     public function endTest(Test $test, float $time): void
     {
-        if (!$this->lastTestFailed) {
+        if (\method_exists($test, 'hasOutput') && \method_exists($test, 'getActualOutput')) {
+            if ($test->hasOutput()) {
+                $this->write($test->getActualOutput());
+            }
+        }
+
+        if (empty($this->failures)) {
             $this->write("\n<PASSED::>Test Passed\n");
-            $this->lastTestFailed = false;
+        } else {
+            $this->write(join("\n", $this->failures));
         }
         $this->write(sprintf("\n<COMPLETEDIN::>%.4f\n", $time * 1000));
     }
