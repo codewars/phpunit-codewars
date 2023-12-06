@@ -20,8 +20,8 @@ use SebastianBergmann\Comparator\ComparisonFailure;
  */
 class CodewarsResultPrinter extends DefaultResultPrinter
 {
-	
-	private $prettifier;
+
+    private $prettifier;
     /**
      * @var TestSuite
      */
@@ -29,10 +29,10 @@ class CodewarsResultPrinter extends DefaultResultPrinter
     // Temporarily store failure messages so that the outputs can be written before them.
     private $failures = array();
 
-	public function __construct() {
-		parent::__construct();
-		 $this->prettifier = new \PHPUnit\Util\TestDox\NamePrettifier();
-	}
+    public function __construct() {
+        parent::__construct();
+        $this->prettifier = new \PHPUnit\Util\TestDox\NamePrettifier();
+    }
 
     /**
      * An error occurred.
