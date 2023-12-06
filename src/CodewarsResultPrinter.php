@@ -20,12 +20,19 @@ use SebastianBergmann\Comparator\ComparisonFailure;
  */
 class CodewarsResultPrinter extends DefaultResultPrinter
 {
+
+    private $prettifier;
     /**
      * @var TestSuite
      */
     private $wrapperSuite = null;
     // Temporarily store failure messages so that the outputs can be written before them.
     private $failures = array();
+
+    public function __construct() {
+        parent::__construct();
+        $this->prettifier = new \PHPUnit\Util\TestDox\NamePrettifier();
+    }
 
     /**
      * An error occurred.
@@ -97,6 +104,7 @@ class CodewarsResultPrinter extends DefaultResultPrinter
         if (empty($suiteName)) {
             return;
         }
+        $suiteName = $this->prettifier->prettifyTestClass($suiteName);
         $this->write(sprintf("\n<DESCRIBE::>%s\n", $suiteName));
     }
 
@@ -122,7 +130,11 @@ class CodewarsResultPrinter extends DefaultResultPrinter
      */
     public function startTest(Test $test): void
     {
-        $this->write(sprintf("\n<IT::>%s\n", $test->getName()));
+        $title = $test->getName();
+        if ($test instanceof TestCase) {
+            $title = $this->prettifier->prettifyTestCase($test);
+        }
+        $this->write(sprintf("\n<IT::>%s\n", $title));
         $this->failures = array();
     }
 
